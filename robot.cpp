@@ -34,27 +34,35 @@ void Robot::eventLoop(int iterations) {
         return;
     }
     int count = 0;
-    while(iterations >= 0){
 
+    while(iterations >= 0){
         int maxDanger = 0;
         int newSpeed;
-
-        try{
+        if(driveOn){
             for (auto it = sensors.begin(); it != sensors.end(); it++){
                 try {
                     int sensorDanger = it->second->checkSensor();
-
                     if (sensorDanger > maxDanger) {
                         maxDanger = sensorDanger;
                     }
                 }
+                catch(CriticalDangerException& e){
+                    cout << e.what() << endl;
+                    motor->emergencyBrake();
+                    sosCount = 5;
+                    driveOn = false;
+                    //soll ein Notstopp derMotoren eingeleitet werden
+                    break;
+                }
                 catch(InternalErrorException& e){
                     cout << e.what() << endl;
                     motor->setSpeed(1);
+                    sosCount = 5;
                     cout << "Motor auf niedrigste Stufe gestellt!" << endl;
                     //dann soll ausSicherheitsgründen auf die niedrigste Geschwindigkeit geschalten werden
                 }
             }
+        }
 
         if(maxDanger == 0){
             newSpeed = 10;
@@ -72,15 +80,9 @@ void Robot::eventLoop(int iterations) {
 
         cout << "----" << endl;
 
-        }
 
-        catch(CriticalDangerException& e){
-            cout << e.what() << endl;
-            motor->setSpeed(0);
-            cout << "Notstop eingelegt!" << endl;
-            sosCount = 5;
-            //soll ein Notstopp derMotoren eingeleitet werden
-        }
+
+
 
 
 

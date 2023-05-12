@@ -17,6 +17,7 @@ private:
     map<int, shared_ptr<Sensor>> sensors; //Sensorkonfiguration
     int sensorID = 0;
     int sosCount = 0;
+    bool driveOn = true;
 
 public:
     //constructor

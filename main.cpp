@@ -8,7 +8,7 @@
 #include "cameraSensor.h"
 
 int main() {
-    //srand(time(nullptr));//Damit random Number immer unterschiedlich ist --> in main (braucht <ctime>)
+    srand(time(nullptr));//Damit random Number immer unterschiedlich ist --> in main (braucht <ctime>)
 
     Robot myrobot(new Motor(4));
 
