@@ -10,20 +10,15 @@
 int main() {
     //srand(time(nullptr));//Damit random Number immer unterschiedlich ist --> in main (braucht <ctime>)
 
-    //Robot myrobot;
-    //myrobot.addSensor(new DistanceSensor);
     Robot myrobot(new Motor(4));
+
     myrobot.addSensor(new DistanceSensor);
-    //myrobot.addSensor(new CameraSensor);
+    myrobot.addSensor(new CameraSensor);
 
     myrobot.eventLoop(3);
 
 
-    /*Motor mymotor(4);
-    cout << "Speed1 Motor: " << mymotor.getSpeed() << endl;
-    mymotor.setSpeed(10);
-    cout << "Speed2 Motor: " << mymotor.getSpeed() << endl;*/
-
+    /*
     try {
         DistanceSensor distance;
         int danger = distance.checkSensor();
@@ -42,7 +37,7 @@ int main() {
     }
     catch(CriticalDangerException& e){
         cout << e.what() << endl;
-    }
+    }*/
 
 
     return 0;

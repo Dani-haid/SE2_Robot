@@ -1,5 +1,7 @@
 #include "robot.h"
 #include "sensor.h"
+#include "motor.h"
+#include "exceptions.h"
 
 int Robot::addSensor(Sensor *sensor) {
     int id = sensorID++;
@@ -26,14 +28,60 @@ void Robot::deleteSensor(int id) {
 }
 
 void Robot::eventLoop(int iterations) {
+    if(sosCount != 0){
+        sosCount --;
+        cout << "sosCount: " << sosCount << endl;
+        return;
+    }
     int count = 0;
     while(iterations >= 0){
 
-        for (auto it = sensors.begin(); it != sensors.end(); it++)
-        {
-            std::cout << it->first << " = " << it->second << "; " << endl;
-            //sensors.checkSensor();
+        int maxDanger = 0;
+        int newSpeed;
+
+        try{
+            for (auto it = sensors.begin(); it != sensors.end(); it++){
+                try {
+                    int sensorDanger = it->second->checkSensor();
+
+                    if (sensorDanger > maxDanger) {
+                        maxDanger = sensorDanger;
+                    }
+                }
+                catch(InternalErrorException& e){
+                    cout << e.what() << endl;
+                    motor->setSpeed(1);
+                    cout << "Motor auf niedrigste Stufe gestellt!" << endl;
+                    //dann soll ausSicherheitsgründen auf die niedrigste Geschwindigkeit geschalten werden
+                }
+            }
+
+        if(maxDanger == 0){
+            newSpeed = 10;
+        }else if(maxDanger < 5){
+            newSpeed = 8;
+        }else if(maxDanger < 9){
+            newSpeed = 3;
+        }else{
+            newSpeed = 1;
         }
+        motor->setSpeed(newSpeed);
+
+        cout << "maxDanger beträgt: " << maxDanger << " newSpeed beträgt: " << newSpeed << endl;
+        cout << "Neue Motorspeed beträgt: " << motor->getSpeed() << endl;
+
+        cout << "----" << endl;
+
+        }
+
+        catch(CriticalDangerException& e){
+            cout << e.what() << endl;
+            motor->setSpeed(0);
+            cout << "Notstop eingelegt!" << endl;
+            sosCount = 5;
+            //soll ein Notstopp derMotoren eingeleitet werden
+        }
+
 
 
         if(iterations == 1){

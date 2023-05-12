@@ -13,6 +13,7 @@ int CameraSensor::checkSensor() {
     }else{
         int a = 0, b = 4;
         int danger = rand()%((b+1)-a) + a; //Zufallszahl zwischen a und b
+        cout << "Gefahrenlevel im Camerasensor: " << danger << endl;
         return danger;
     }
 }

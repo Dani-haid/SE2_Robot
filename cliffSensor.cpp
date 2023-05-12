@@ -13,6 +13,7 @@ int CliffSensor::checkSensor() {
     }else{
         int a = 0, b = 9;
         int danger = rand()%((b+1)-a) + a; //Zufallszahl zwischen a und b
+        cout << "Gefahrenlevel im Cliffsensor: " << danger << endl;
         return danger;
     }
 }
